@@ -4,10 +4,291 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Typing Speed Test</title>
-    <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bgColor: #333;
+            --textPrimary: #fff;
+            --textSecondary: #666;
+            --primaryColor: #fd4;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bgColor);
+            color: var(--textPrimary);
+            font-size: 1.4rem;
+            margin: 0;
+            padding: 0;
+            touch-action: manipulation;
+        }
+
+        main {
+            width: 90%;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 0 10px;
+        }
+
+        h1 {
+            color: var(--primaryColor);
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        #header {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            margin: 20px 6px 30px;
+            align-items: center;
+        }
+
+        #buttons {
+            text-align: right;
+        }
+
+        #info {
+            color: var(--primaryColor);
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        button {
+            background: rgba(255, 255, 255, 0.2);
+            border: 0;
+            color: rgba(255, 255, 255, 0.8);
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        #game {
+            line-height: 35px;
+            height: 105px;
+            overflow: hidden;
+            position: relative;
+            border: 2px solid var(--textSecondary);
+            border-radius: 8px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        #game:focus {
+            outline: 0;
+        }
+
+        #words {
+            color: var(--textSecondary);
+            position: relative;
+            font-family: 'Roboto Mono', monospace;
+            filter: blur(5px);
+        }
+
+        #game:focus #words,
+        #game.focused #words {
+            color: var(--textPrimary);
+            filter: blur(0px);
+        }
+
+        #mobile-input {
+            position: fixed;
+            top: -100px;
+            left: -100px;
+            opacity: 0;
+            pointer-events: none;
+            font-size: 16px;
+        }
+
+        #focus-error {
+            position: absolute;
+            inset: 0;
+            text-align: center;
+            padding-top: 35px;
+            background: rgba(51, 51, 51, 0.9);
+            border-radius: 6px;
+        }
+
+        #game:focus #focus-error,
+        #game.focused #focus-error {
+            display: none;
+        }
+
+        .word {
+            display: inline-block;
+            font-family: 'Roboto Mono', monospace;
+            margin: 0 5px;
+        }
+
+        .letter.correct {
+            color: #4CAF50;
+            background: rgba(76, 175, 80, 0.1);
+        }
+
+        .letter.incorrect {
+            color: #f55;
+            background: rgba(255, 85, 85, 0.2);
+        }
+
+        .letter.extra {
+            color: #ff9800;
+            background: rgba(255, 152, 0, 0.2);
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        #cursor {
+            display: none;
+            width: 2px;
+            height: 1.6rem;
+            background: var(--primaryColor);
+            position: absolute;
+            animation: blink 1s infinite;
+        }
+
+        #game:focus #cursor,
+        #game.focused #cursor {
+            display: block;
+        }
+
+        #game.over #words {
+            opacity: 0.5;
+        }
+
+        #game.over:focus #cursor,
+        #game.over.focused #cursor {
+            display: none;
+        }
+
+        #game.over:focus #focus-error,
+        #game.over.focused #focus-error {
+            display: none;
+        }
+
+        #result-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #popup-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--bgColor);
+            border: 2px solid var(--primaryColor);
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            color: var(--textPrimary);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        #popup-content h2 {
+            margin-bottom: 20px;
+            font-size: 1.8em;
+            color: var(--primaryColor);
+        }
+
+        #popup-content p {
+            margin: 10px 0;
+            font-size: 1.1em;
+        }
+
+        #popup-content button {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: var(--primaryColor);
+            color: var(--bgColor);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        #mobile-hint {
+            text-align: center;
+            color: var(--textSecondary);
+            font-size: 0.9em;
+            margin-top: 10px;
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                font-size: 1.2rem;
+            }
+
+            #header {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 10px;
+            }
+
+            #buttons {
+                text-align: center;
+            }
+
+            button {
+                font-size: 1.1rem;
+                padding: 12px 24px;
+            }
+
+            #cursor {
+                height: 1.4rem;
+            }
+
+            #mobile-hint {
+                display: block;
+            }
+
+            #game {
+                min-height: 120px;
+                font-size: 1.1rem;
+            }
+
+            .word {
+                margin: 0 3px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            main {
+                margin: 10px auto;
+                padding: 0 5px;
+            }
+
+            h1 {
+                font-size: 1.8rem;
+            }
+
+            #game {
+                font-size: 1rem;
+                padding: 8px;
+            }
+
+            #popup-content {
+                padding: 20px;
+            }
+        }
+    </style>
 </head>
 <body>
     <main>
@@ -31,6 +312,406 @@
     <div id="result-popup">
         <div id="popup-content"></div>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        const words = 'the series was originally published in english by bloomsbury in the united kingdom and scholastic press in the united states a series of many genres including fantasy drama coming of age fiction and the british school story which includes elements of mystery thriller adventure horror and romance the world of harry potter explores numerous themes and includes many cultural meanings and references major themes in the series include prejudice corruption madness love and death since the release of the first novel harry potter and the philosophers stone on the books have found immense popularity and commercial success worldwide they have attracted a wide adult audience as well as younger readers and are widely considered cornerstones of modern literature though the books have received mixed reviews from critics and literary scholars as of february the books have sold more than million copies worldwide making them the bestselling book series in history available in dozens of languages'.split(' ');
+        const wordsCount = words.length;
+        const gameTime = 60 * 1000;
+        let timer = null;
+        let gameStart = null;
+        let isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
+        function addClass(el, name) {
+            if (el) el.classList.add(name);
+        }
+
+        function removeClass(el, name) {
+            if (el) el.classList.remove(name);
+        }
+
+        function randomWord() {
+            const randomIndex = Math.floor(Math.random() * wordsCount);
+            return words[randomIndex];
+        }
+
+        function formatWord(word) {
+            return `<div class="word"><span class="letter">${word.split('').join('</span><span class="letter">')}</span></div>`;
+        }
+
+        function startTimer() {
+            gameStart = Date.now();
+            updateTimer();
+            timer = setInterval(updateTimer, 1000);
+        }
+
+        function updateTimer() {
+            const msPassed = Date.now() - gameStart;
+            const sPassed = Math.floor(msPassed / 1000);
+            const sLeft = (gameTime / 1000) - sPassed;
+            document.getElementById('info').innerHTML = Math.max(sLeft, 0) + '';
+            if (sLeft <= 0) {
+                gameOver();
+            }
+        }
+
+        function newGame() {
+            clearInterval(timer);
+            timer = null;
+            gameStart = null;
+
+            const container = document.getElementById('words');
+            container.innerHTML = '';
+            container.style.marginTop = '0px';
+
+            // Generate words
+            for (let i = 0; i < 200; i++) {
+                container.innerHTML += formatWord(randomWord());
+            }
+
+            // Set current word and letter
+            const firstWord = document.querySelector('.word');
+            const firstLetter = document.querySelector('.letter');
+            
+            if (firstWord) addClass(firstWord, 'current');
+            if (firstLetter) addClass(firstLetter, 'current');
+            
+            document.getElementById('info').innerHTML = (gameTime / 1000) + '';
+            removeClass(document.getElementById('game'), 'over');
+            
+            const mobileInput = document.getElementById('mobile-input');
+            if (mobileInput) mobileInput.value = '';
+            
+            updateCursor();
+        }
+
+        function calculateStats() {
+            const allWords = [...document.querySelectorAll('.word')];
+            const currentWord = document.querySelector('.word.current');
+            const currentWordIndex = allWords.indexOf(currentWord);
+            const typedWords = allWords.slice(0, currentWordIndex);
+
+            let totalTypedChars = 0;
+            let correctTypedChars = 0;
+            let correctWords = 0;
+
+            typedWords.forEach(word => {
+                const letters = [...word.querySelectorAll('.letter')];
+                let isWordCorrect = true;
+                let hasTypedChar = false;
+
+                letters.forEach(letter => {
+                    if (letter.classList.contains('correct') || 
+                        letter.classList.contains('incorrect') || 
+                        letter.classList.contains('extra')) {
+                        totalTypedChars++;
+                        hasTypedChar = true;
+                    }
+
+                    if (letter.classList.contains('correct')) {
+                        correctTypedChars++;
+                    }
+
+                    if (letter.classList.contains('incorrect')) {
+                        isWordCorrect = false;
+                    }
+                });
+
+                if (isWordCorrect && hasTypedChar) {
+                    correctWords++;
+                }
+            });
+
+            const wpm = correctWords;
+            const cpm = correctTypedChars;
+            const accuracy = totalTypedChars > 0 ? Math.round((correctTypedChars / totalTypedChars) * 100) : 0;
+
+            let category = 'Snail 🐌';
+            if (wpm > 45) category = 'T-Rex 🦖';
+            else if (wpm > 40) category = 'Octopus 🐙';
+
+            return { wpm, cpm, accuracy, category };
+        }
+
+        function showResultsPopup({ wpm, cpm, accuracy, category }) {
+            const popup = document.getElementById('result-popup');
+            const content = document.getElementById('popup-content');
+
+            content.innerHTML = `
+                <h2>You're a ${category}!</h2>
+                <p><strong>Words per minute:</strong> ${wpm}</p>
+                <p><strong>Characters per minute:</strong> ${cpm}</p>
+                <p><strong>Accuracy:</strong> ${accuracy}%</p>
+                <p>Keep practicing to improve your speed and precision!</p>
+                <button onclick="restartGame()">Play Again</button>
+            `;
+
+            popup.style.display = 'block';
+        }
+
+        function gameOver() {
+            clearInterval(timer);
+            addClass(document.getElementById('game'), 'over');
+            removeClass(document.getElementById('game'), 'focused');
+            
+            const stats = calculateStats();
+            showResultsPopup(stats);
+        }
+
+        function restartGame() {
+            document.getElementById('result-popup').style.display = 'none';
+            newGame();
+            if (isMobile) {
+                focusInput();
+            }
+        }
+
+        function updateCursor() {
+            const nextLetter = document.querySelector('.letter.current');
+            const nextWord = document.querySelector('.word.current');
+            const cursor = document.getElementById('cursor');
+            const game = document.getElementById('game');
+
+            if (!cursor || !game) return;
+
+            if (nextLetter) {
+                const rect = nextLetter.getBoundingClientRect();
+                const gameRect = game.getBoundingClientRect();
+                cursor.style.top = (rect.top - gameRect.top) + 'px';
+                cursor.style.left = (rect.left - gameRect.left) + 'px';
+            } else if (nextWord) {
+                const rect = nextWord.getBoundingClientRect();
+                const gameRect = game.getBoundingClientRect();
+                cursor.style.top = (rect.top - gameRect.top) + 'px';
+                cursor.style.left = (rect.right - gameRect.left) + 'px';
+            }
+        }
+
+        function handleInput(inputValue) {
+            const currentWord = document.querySelector('.word.current');
+            if (!currentWord) return;
+            
+            const currentWordText = [...currentWord.querySelectorAll('.letter')].map(l => l.textContent).join('');
+            
+            // Clear previous states
+            [...currentWord.querySelectorAll('.letter')].forEach(letter => {
+                letter.classList.remove('correct', 'incorrect', 'current');
+            });
+            
+            // Remove extra letters
+            [...currentWord.querySelectorAll('.letter.extra')].forEach(letter => {
+                letter.remove();
+            });
+
+            // Check each character
+            for (let i = 0; i < Math.max(inputValue.length, currentWordText.length); i++) {
+                const typedChar = inputValue[i];
+                const expectedChar = currentWordText[i];
+                
+                if (i < currentWordText.length) {
+                    const letter = currentWord.children[i];
+                    if (i < inputValue.length) {
+                        addClass(letter, typedChar === expectedChar ? 'correct' : 'incorrect');
+                    }
+                } else if (typedChar) {
+                    // Extra character
+                    const extraLetter = document.createElement('span');
+                    extraLetter.textContent = typedChar;
+                    extraLetter.className = 'letter incorrect extra';
+                    currentWord.appendChild(extraLetter);
+                }
+            }
+
+            // Set current letter
+            if (inputValue.length < currentWord.children.length) {
+                addClass(currentWord.children[inputValue.length], 'current');
+            }
+
+            updateCursor();
+        }
+
+        function moveToNextWord() {
+            const currentWord = document.querySelector('.word.current');
+            const nextWord = currentWord ? currentWord.nextElementSibling : null;
+            
+            if (!nextWord) return;
+
+            // Mark untyped letters as incorrect
+            [...currentWord.querySelectorAll('.letter:not(.correct):not(.incorrect)')].forEach(letter => {
+                addClass(letter, 'incorrect');
+            });
+
+            removeClass(currentWord, 'current');
+            addClass(nextWord, 'current');
+            addClass(nextWord.firstElementChild, 'current');
+
+            // Scroll if needed
+            const game = document.getElementById('game');
+            const gameTop = game.getBoundingClientRect().top;
+            if (nextWord.getBoundingClientRect().top - gameTop > 70) {
+                const words = document.getElementById('words');
+                const margin = parseInt(words.style.marginTop || '0px');
+                words.style.marginTop = (margin - 35) + 'px';
+            }
+
+            updateCursor();
+        }
+
+        function focusInput() {
+            const mobileInput = document.getElementById('mobile-input');
+            const game = document.getElementById('game');
+            
+            addClass(game, 'focused');
+            mobileInput.focus();
+            
+            if (!timer) {
+                startTimer();
+            }
+        }
+
+        // Event listeners
+        document.addEventListener('DOMContentLoaded', function() {
+            const game = document.getElementById('game');
+            const mobileInput = document.getElementById('mobile-input');
+
+            // Desktop keyboard events
+            game.addEventListener('keyup', function(ev) {
+                if (isMobile) return;
+                
+                const key = ev.key;
+                const currentWord = document.querySelector('.word.current');
+                const currentLetter = document.querySelector('.letter.current');
+                const expected = currentLetter?.innerHTML || ' ';
+                const isLetter = key.length === 1 && key !== ' ';
+                const isSpace = key === ' ';
+                const isBackspace = key === 'Backspace';
+                const isFirstLetter = currentLetter === currentWord?.firstChild;
+
+                if (document.querySelector('#game.over')) return;
+
+                if (!timer && isLetter) {
+                    startTimer();
+                }
+
+                if (isLetter) {
+                    if (currentLetter) {
+                        addClass(currentLetter, key === expected ? 'correct' : 'incorrect');
+                        removeClass(currentLetter, 'current');
+                        if (currentLetter.nextSibling) {
+                            addClass(currentLetter.nextSibling, 'current');
+                        }
+                    } else {
+                        const incorrectLetter = document.createElement('span');
+                        incorrectLetter.innerHTML = key;
+                        incorrectLetter.className = 'letter incorrect extra';
+                        currentWord.appendChild(incorrectLetter);
+                    }
+                }
+
+                if (isSpace) {
+                    if (expected !== ' ') {
+                        const lettersToInvalidate = [...document.querySelectorAll('.word.current .letter:not(.correct)')];
+                        lettersToInvalidate.forEach(letter => {
+                            addClass(letter, 'incorrect');
+                        });
+                    }
+                    removeClass(currentWord, 'current');
+                    if (currentWord.nextSibling) {
+                        addClass(currentWord.nextSibling, 'current');
+                        if (currentLetter) {
+                            removeClass(currentLetter, 'current');
+                        }
+                        addClass(currentWord.nextSibling.firstChild, 'current');
+                    }
+                }
+
+                if (isBackspace) {
+                    if (currentLetter && isFirstLetter) {
+                        removeClass(currentWord, 'current');
+                        if (currentWord.previousSibling) {
+                            addClass(currentWord.previousSibling, 'current');
+                            removeClass(currentLetter, 'current');
+                            addClass(currentWord.previousSibling.lastChild, 'current');
+                            removeClass(currentWord.previousSibling.lastChild, 'incorrect');
+                            removeClass(currentWord.previousSibling.lastChild, 'correct');
+                        }
+                    }
+                    if (currentLetter && !isFirstLetter) {
+                        removeClass(currentLetter, 'current');
+                        addClass(currentLetter.previousSibling, 'current');
+                        removeClass(currentLetter.previousSibling, 'incorrect');
+                        removeClass(currentLetter.previousSibling, 'correct');
+                    }
+                    if (!currentLetter) {
+                        addClass(currentWord.lastChild, 'current');
+                        removeClass(currentWord.lastChild, 'incorrect');
+                        removeClass(currentWord.lastChild, 'correct');
+                    }
+                }
+
+                // Scroll if needed
+                const gameTop = game.getBoundingClientRect().top;
+                if (currentWord && currentWord.getBoundingClientRect().top - gameTop > 70) {
+                    const words = document.getElementById('words');
+                    const margin = parseInt(words.style.marginTop || '0px');
+                    words.style.marginTop = (margin - 35) + 'px';
+                }
+
+                updateCursor();
+            });
+
+            // Focus events
+            game.addEventListener('click', function() {
+                if (!isMobile) {
+                    addClass(this, 'focused');
+                    this.focus();
+                }
+            });
+
+            game.addEventListener('focus', function() {
+                if (!isMobile) {
+                    addClass(this, 'focused');
+                }
+            });
+
+            game.addEventListener('blur', function() {
+                if (!isMobile) {
+                    removeClass(this, 'focused');
+                }
+            });
+
+            // Mobile events
+            if (isMobile) {
+                game.addEventListener('click', focusInput);
+                game.addEventListener('touchstart', focusInput);
+            }
+
+            // Mobile input handling
+            mobileInput.addEventListener('input', function(e) {
+                if (document.querySelector('#game.over')) return;
+                
+                const inputValue = e.target.value;
+                const currentWord = document.querySelector('.word.current');
+                
+                if (!currentWord) return;
+
+                if (inputValue.includes(' ')) {
+                    const wordPart = inputValue.substring(0, inputValue.indexOf(' '));
+                    handleInput(wordPart);
+                    moveToNextWord();
+                    e.target.value = inputValue.substring(inputValue.indexOf(' ') + 1);
+                    return;
+                }
+
+                handleInput(inputValue);
+            });
+
+            mobileInput.addEventListener('blur', function() {
+                removeClass(game, 'focused');
+            });
+
+            // Initialize the game
+            newGame();
+        });
+    </script>
 </body>
 </html>
