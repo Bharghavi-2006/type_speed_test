@@ -1,0 +1,188 @@
+:root{
+    --bgColor: #333;
+    --textPrimary: #fff;
+    --textSecondary: #666;
+    --primaryColor: #fd4;
+}
+
+body{
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--bgColor);
+    color: var(--textPrimary);
+    font-size: 1.4rem;
+    margin: 0;
+}
+
+main{
+    width: 90%;
+    max-width: 600px;
+    margin: 50px auto;
+}
+
+h1{
+    color: var(--primaryColor);
+}
+
+#header{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin: 20px 6px 30px;
+}
+
+#buttons{
+    text-align: right;
+}
+
+#info{
+    color: var(--primaryColor);
+}
+
+button{
+    background: rgba(255, 255, 255, 0.2);
+    border: 0;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 5px 28px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+div#game{
+    line-height: 35px;
+    height: 105px;
+    overflow: hidden;
+    position: relative;
+}
+
+div#game:focus{
+    outline: 0;
+}
+
+#words{
+    filter: blur(5px);
+    color: var(--textSecondary);
+    position: relative;
+}
+
+#game:focus #words{
+    filter: blur(0);
+}
+
+#focus-error{
+    position: absolute;
+    inset: 0;
+    text-align: center;
+    padding-top: 35px;
+}
+
+#game:focus #focus-error{
+    display: none;
+}
+
+div.word{
+    display: inline-block;
+    font-family: 'Roboto Mono', monospace;
+    margin: 0 5px; 
+}
+
+.letter.correct{
+    color: #fff;
+}
+
+.letter.incorrect{
+    color: #f55;
+}
+
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+#cursor{
+    display: none;
+    width: 2px;
+    height: 1.6rem;
+    background: var(--primaryColor);
+    position: absolute;
+    top: 198px;
+    left: 160px;
+    animation: blink 1s infinite;
+}
+
+#game:focus #cursor{
+    display: block;
+}
+
+
+#game.over #words{
+    opacity: .5;
+    filter: blur(0px);
+}
+
+#game.over:focus #cursor{
+    display: none;
+}
+
+#game.over:focus #focus-error{
+    display: none;
+}
+
+#results-popup {
+    position: fixed;
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+    z-index: 1000;
+    max-width: 300px;
+    text-align: center;
+    font-family: 'Roboto Mono';
+    color: var(--primaryColor);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.popup-content h2 {
+    margin-bottom: 10px;
+    font-size: 1.8em;
+}
+
+.popup-content p {
+    margin: 5px 0;
+    font-size: 1.2em;
+}
+
+.popup-content button {
+    margin-top: 10px;
+    padding: 6px 12px;
+    border: none;
+    background: #333;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+@media (max-width: 480px) {
+    #header {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    button {
+        font-size: 1.1rem;
+        padding: 10px 24px;
+    }
+
+    #cursor {
+        height: 1.2rem;
+    }
+}
