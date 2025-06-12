@@ -126,7 +126,6 @@ function showResultsPopup({ wpm, cpm, accuracy, category }) {
   popup.style.display = 'block';
 }
 
-
 function gameOver() {
   clearInterval(window.timer);
   addClass(document.getElementById('game'), 'over');
@@ -140,7 +139,6 @@ function restartGame() {
   removeClass(document.getElementById('game'), 'over');
   newGame();
 }
-
 
 document.getElementById('game').addEventListener('keyup', ev => {
   const key = ev.key;
