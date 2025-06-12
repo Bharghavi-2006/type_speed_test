@@ -1,48 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Typing Speed Test</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Typing Speed Test</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <main>
-        <h1>
-            Typing Speed Test
-        </h1>
-        <div id="header">
-            <div id="info">60</div>
-            <div id="buttons">
-            </div>
-        </div>
-        <div id="game" tabindex="0">
-            <div id="words"></div>
-            <div id="cursor"></div>
-        </div>
-    </main>
+  <div id="game">
+    <div id="words"></div>
+    <div id="cursor"></div>
+    <div id="info"></div>
+  </div>
 
-    <input id="mobile-input"
-  type="text"
-  autocomplete="off"
-  autocorrect="off"
-  autocapitalize="off"
-  spellcheck="false"
-  style="position: absolute; width: 1px; height: 1px; opacity: 0; z-index: 1;" />
+  <input id="mobile-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="opacity:0; position:absolute; left:-9999px;" />
 
-    <div id="result-popup">
-        <div class="popup-content" id="popup-content">
-        </div>
-    </div>
-    <script src="sandbox.js"></script>
-    <script>
-        window.onload = () => {
-            newGame();
-            document.getElementById('mobile-input').focus();
-        };
-    </script>
+  <div id="result-popup" style="display:none;">
+    <div id="popup-content"></div>
+  </div>
+
+  <script src="sandbox.js"></script>
 </body>
 </html>
