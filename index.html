@@ -11,9 +11,7 @@
 </head>
 <body>
     <main>
-        <h1>
-            Typing Speed Test
-        </h1>
+        <h1>Typing Speed Test</h1>
         <div id="header">
             <div id="info">60</div>
             <div id="buttons">
@@ -23,7 +21,7 @@
         <div id="game" tabindex="0">
             <div id="words"></div>
             <div id="cursor"></div>
-            <div id="focus-error">Click here to type</div>
+            <div id="focus-error">Click here to focus</div>
         </div>
         <div id="mobile-hint">
             Tap the text area above to start typing
@@ -33,11 +31,9 @@
     <input id="mobile-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 
     <div id="result-popup">
-        <div class="popup-content" id="popup-content">
-        </div>
+        <div id="popup-content"></div>
     </div>
-    
-    <script src="sandbox.js"></script>
-    
+
+    <script src="script.js"></script>
 </body>
 </html>
