@@ -241,20 +241,20 @@ window.onload = () => {
   mobileInput.focus();
 
   document.getElementById('game').addEventListener('click', () => {
-    mobileInput.focus();
+    document.getElementById('mobile-input').focus();
   });
 
-  // Redirect mobile key input to the game keyup handler
+  
   mobileInput.addEventListener('input', (e) => {
     const value = e.target.value;
     if (!value) return;
 
-    // Simulate keypresses
+    
     const key = value[value.length - 1];
     const event = new KeyboardEvent('keyup', { key });
     document.getElementById('game').dispatchEvent(event);
 
-    // Clear mobile input
+    
     e.target.value = '';
   });
 };
