@@ -27,7 +27,21 @@
         </div>
     </main>
 
-    <input id="mobile-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="position:absolute; opacity:0; pointer-events:none;">
+    <input 
+        id="mobile-input" 
+        type="text" 
+        autocomplete="off" 
+        autocorrect="off" 
+        autocapitalize="off" 
+        spellcheck="false" 
+        style="
+          position:absolute; 
+          opacity:0; 
+          z-index: -1;
+          height: 0;
+          width: 0;
+        "
+    >
 
     <div id="result-popup">
         <div class="popup-content" id="popup-content">
