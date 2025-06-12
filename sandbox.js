@@ -23,7 +23,7 @@ function formatWord(word) {
 
 function startTimer() {
   window.gameStart = Date.now();
-  updateTimer(); // ⏱️ Immediately show first value
+  updateTimer(); 
   window.timer = setInterval(updateTimer, 1000);
 }
 
@@ -59,7 +59,7 @@ function calculateStats() {
   const words = [...document.querySelectorAll('.word')];
   const currentWord = document.querySelector('.word.current');
   const currentWordIndex = words.indexOf(currentWord);
-  const typedWords = words.slice(0, currentWordIndex + 1); // include current word
+  const typedWords = words.slice(0, currentWordIndex + 1); 
 
   let totalTypedChars = 0;
   let correctTypedChars = 0;
@@ -151,7 +151,7 @@ document.getElementById('game').addEventListener('keyup', ev => {
   if (document.querySelector('#game.over')) return;
 
   if (!window.timer && isLetter) {
-    startTimer(); // ✅ Starts and updates immediately
+    startTimer(); 
   }
 
   if (isLetter) {
@@ -206,7 +206,6 @@ document.getElementById('game').addEventListener('keyup', ev => {
     }
   }
 
-  // scroll logic
   const gameTop = document.getElementById('game').getBoundingClientRect().top;
   if (currentWord.getBoundingClientRect().top - gameTop > 70) {
     const words = document.getElementById('words');
@@ -214,7 +213,6 @@ document.getElementById('game').addEventListener('keyup', ev => {
     words.style.marginTop = (margin - 35) + 'px';
   }
 
-  // cursor movement
   const nextLetter = document.querySelector('.letter.current');
   const nextWord = document.querySelector('.word.current');
   const cursor = document.getElementById('cursor');
@@ -258,4 +256,16 @@ window.onload = () => {
     e.target.value = '';
   });
 };
+
+const gameElement = document.getElementById('game');
+const mobileInput = document.getElementById('mobile-input');
+
+gameElement.addEventListener('touchstart', () => {
+  mobileInput.focus({ preventScroll: true });
+});
+
+gameElement.addEventListener('click', () => {
+  mobileInput.focus({ preventScroll: true });
+});
+
 
