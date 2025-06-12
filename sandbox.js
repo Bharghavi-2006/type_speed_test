@@ -1,8 +1,10 @@
 const words = 'the series was originally published in english by bloomsbury in the united kingdom and scholastic press in the united states a series of many genres including fantasy drama coming of age fiction and the british school story which includes elements of mystery thriller adventure horror and romance the world of harry potter explores numerous themes and includes many cultural meanings and references major themes in the series include prejudice corruption madness love and death since the release of the first novel harry potter and the philosophers stone on the books have found immense popularity and commercial success worldwide they have attracted a wide adult audience as well as younger readers and are widely considered cornerstones of modern literature though the books have received mixed reviews from critics and literary scholars as of february the books have sold more than million copies worldwide making them the bestselling book series in history available in dozens of languages'.split(' ');
+
 const wordsCount = words.length;
 const gameTime = 60 * 1000;
 window.timer = null;
 window.gameStart = null;
+let lastLength = 0;
 
 function addClass(el, name) {
   el.classList.add(name);
@@ -53,6 +55,8 @@ function newGame() {
   addClass(document.querySelector('.word'), 'current');
   addClass(document.querySelector('.letter'), 'current');
   document.getElementById('info').innerHTML = (gameTime / 1000) + '';
+  document.getElementById('mobile-input').value = '';
+  lastLength = 0;
 }
 
 function calculateStats() {
@@ -232,40 +236,30 @@ document.getElementById('game').addEventListener('keyup', ev => {
 
 newGame();
 
-window.onload = () => {
-  newGame();
-
+window.addEventListener('DOMContentLoaded', () => {
   const mobileInput = document.getElementById('mobile-input');
-  mobileInput.focus();
+  const gameElement = document.getElementById('game');
 
-  document.getElementById('game').addEventListener('click', () => {
-    document.getElementById('mobile-input').focus();
+  if (!mobileInput || !gameElement) return;
+
+  gameElement.addEventListener('touchstart', () => {
+    mobileInput.focus({ preventScroll: true });
   });
 
-  
+  gameElement.addEventListener('click', () => {
+    mobileInput.focus({ preventScroll: true });
+  });
+
   mobileInput.addEventListener('input', (e) => {
-    const value = e.target.value;
-    if (!value) return;
+    const val = e.target.value;
+    if (!val) return;
+    const key = val[val.length - 1];
 
-    
-    const key = value[value.length - 1];
-    const event = new KeyboardEvent('keyup', { key });
-    document.getElementById('game').dispatchEvent(event);
+    const synthetic = new KeyboardEvent('keyup', { key });
+    gameElement.dispatchEvent(synthetic);
 
-    
     e.target.value = '';
   });
-};
 
-const gameElement = document.getElementById('game');
-const mobileInput = document.getElementById('mobile-input');
-
-gameElement.addEventListener('touchstart', () => {
   mobileInput.focus({ preventScroll: true });
 });
-
-gameElement.addEventListener('click', () => {
-  mobileInput.focus({ preventScroll: true });
-});
-
-
