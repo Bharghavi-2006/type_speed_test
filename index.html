@@ -17,28 +17,27 @@
         <div id="header">
             <div id="info">60</div>
             <div id="buttons">
-                <button>Restart</button>
+                <button onclick="restartGame()">Restart</button>
             </div>
         </div>
         <div id="game" tabindex="0">
             <div id="words"></div>
             <div id="cursor"></div>
-            <div id="focus-error">Click here to focus</div>
+            <div id="focus-error">Click here to type</div>
+        </div>
+        <div id="mobile-hint">
+            Tap the text area above to start typing
         </div>
     </main>
 
-    <input id="mobile-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" style="position:absolute; opacity:0; pointer-events:none;">
+    <input id="mobile-input" type="text" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
 
     <div id="result-popup">
         <div class="popup-content" id="popup-content">
         </div>
     </div>
+    
     <script src="sandbox.js"></script>
-    <script>
-        window.onload = () => {
-            newGame();
-            document.getElementById('mobile-input').focus();
-        };
-    </script>
+    
 </body>
 </html>
