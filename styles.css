@@ -67,17 +67,6 @@ div#game:focus{
     filter: blur(0);
 }
 
-#focus-error{
-    position: absolute;
-    inset: 0;
-    text-align: center;
-    padding-top: 35px;
-}
-
-#game:focus #focus-error{
-    display: none;
-}
-
 div.word{
     display: inline-block;
     font-family: 'Roboto Mono', monospace;
